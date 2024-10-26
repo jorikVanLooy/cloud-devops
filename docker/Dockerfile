@@ -1,3 +1,4 @@
-FROM ubuntu
+FROM amazoncorretto:8-al2023
+ADD target .
 EXPOSE 8080
-CMD  [ "echo", "hello world" ]
+CMD  [ "/bin/bash", "-c", "java -jar target/*.jar" ]
