@@ -6,10 +6,10 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Build and push dev
+name: Build and push
 
 on:
-  push:
+  pull_request:
     branches:
       - "main"
 
@@ -30,18 +30,14 @@ jobs:
     - name: set maven version
       id: set-version
       run : |
-        echo $(mvn help:evaluate -Dexpression=project.version -q -DforceStdout) > version
-        cut -d- -f 1 version > version
-        cat version
-        MAJOR=$(cut -d. -f 1 version)
-        MINOR=$(cut -d. -f 2 version)
-        PATCH=$(cut -d. -f 3 version)
-        new_version=$( printf "%d.%d.%d" $MAJOR $MINOR $(( $PATCH + 1 )))
-        echo new_version
-        mvn versions:set -DnewVersion=$(cat version) -DgenerateBackupPoms=false --batch-mode
+        new_version="$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)-${GITHUB_SHA}"
+        mvn versions:set -DnewVersion=$new_version -DgenerateBackupPoms=false --batch-mode
+        echo "docker-tag=$(echo $new_version)" >> $GITHUB_OUTPUT
 
     - name: Build with Maven
-      run: mvn -B package --file pom.xml
+      run: |
+        mvn help:evaluate -Dexpression=project.version -q -DforceStdout
+        mvn -B package --file pom.xml
 
     - name: Run tests with Maven
       run: mvn -B test --file pom.xml
@@ -64,4 +60,4 @@ jobs:
         context: .
         file: docker/Dockerfile
         push: true
-        tags: jorikvl/cloud-devops-example:latest
+        tags: jorikvl/cloud-devops-example:${{ steps.set-version.outputs.docker-tag }}

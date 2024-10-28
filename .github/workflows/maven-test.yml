@@ -27,15 +27,5 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
-    - name: set maven version
-      id: set-version
-      run : |
-          echo "current_version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)-${GITHUB_SHA}" >> $GITHUB_OUTPUT
-          echo $current_version
-          export current_version="$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)-${GITHUB_SHA}";
-          echo $current_version;
-          mvn versions:set -DnewVersion=$current_version -DgenerateBackupPoms=false --batch-mode
-
-
     - name: Run tests with Maven
       run: mvn -B test --file pom.xml

@@ -6,15 +6,11 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Build and push
+name: Build and push prod
 
 on:
-  push:
-    branches:
-      - "main"
-  pull_request:
-    branches:
-      - "main"
+  workflow_dispatch:
+    
 
 jobs:
   build:
