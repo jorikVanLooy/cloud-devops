@@ -19,7 +19,7 @@ jobs:
     permissions:
       contents: write
     environment:
-      "production"
+      "prod"
 
     runs-on: ubuntu-latest
     outputs:
@@ -73,7 +73,7 @@ jobs:
     needs: build
     runs-on: 
       ubuntu-latest
-    environment: "production"
+    environment: "prod"
     steps:
       - name: login to Azure
         uses: azure/login@v1
