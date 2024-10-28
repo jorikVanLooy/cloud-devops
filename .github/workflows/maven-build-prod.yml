@@ -11,6 +11,8 @@ name: Build and push prod
 on:
   workflow_dispatch:
     
+permissions:
+  id-token: write
 
 jobs:
   build:
