@@ -67,9 +67,6 @@ jobs:
         push: true
         tags: jorikvl/cloud-devops-example:${{ steps.set-version.outputs.docker-tag }}
 
-    - name: commit and push changes
-      uses: stefanzweifel/git-auto-commit-action@v5
-
   deploy:
     needs: build
     runs-on: 
