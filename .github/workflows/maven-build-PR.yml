@@ -89,8 +89,8 @@ jobs:
           azcliversion: latest
           inlineScript: |
             az extension add --name containerapp --upgrade
-            echo ${docker-tag}
+            echo "${docker-tag}"
             az containerapp update \
               -n dev-app -g rg-dev \
-              --image docker.io/jorikvl/cloud-devops-example:${docker-tag}
+            --image "docker.io/jorikvl/cloud-devops-example:${docker-tag}"
 
