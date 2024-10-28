@@ -85,6 +85,6 @@ jobs:
           docker-tag: ${{ needs.build.outputs.docker-tag }}
         uses: azure/container-apps-deploy-action@v1
         with:
-          imageToDeploy: docker.io/jorikvl/cloud-devops-example:$docker-tag
+          imageToDeploy: "docker.io/jorikvl/cloud-devops-example:${docker-tag}"
           containerAppName: dev-app
           resourceGroup: rg-dev
