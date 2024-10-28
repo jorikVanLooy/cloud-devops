@@ -84,13 +84,13 @@ jobs:
       - name: Build and deploy Container App
         uses: azure/cli@v2
         env:
-          docker-tag: ${{ needs.build.outputs.docker-tag }}
+          docker_tag: ${{ needs.build.outputs.docker-tag }}
         with:
           azcliversion: latest
           inlineScript: |
             az extension add --name containerapp --upgrade
-            echo "${docker-tag}"
+            echo "${docker_tag}"
             az containerapp update \
               -n dev-app -g rg-dev \
-            --image "docker.io/jorikvl/cloud-devops-example:${docker-tag}"
+            --image "docker.io/jorikvl/cloud-devops-example:${docker_tag}"
 
