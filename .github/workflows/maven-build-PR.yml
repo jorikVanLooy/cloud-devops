@@ -87,3 +87,4 @@ jobs:
         with:
           imageToDeploy: jorikvl/cloud-devops-example:$docker-tag
           containerAppName: dev-app
+          resourceGroup: rg-dev
