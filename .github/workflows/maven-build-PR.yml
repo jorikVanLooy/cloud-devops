@@ -6,22 +6,22 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Build and push dev
+name: Build and push
 
 on:
-  push:
+  pull_request:
     branches:
       - "main"
+permissions:
+  id-token: write
 
 jobs:
   build:
-    environment:
-      "dev"
-    permissions:
-      contents: write
-    runs-on: ubuntu-latest
+    environment: "dev"
     outputs:
       docker-tag: ${{ steps.set-version.outputs.docker-tag }}
+
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
@@ -35,19 +35,15 @@ jobs:
     - name: set maven version
       id: set-version
       run : |
-        echo $(mvn help:evaluate -Dexpression=project.version -q -DforceStdout) > version
-        cut -d- -f 1 version > version
-        cat version
-        MAJOR=$(cut -d. -f 1 version)
-        MINOR=$(cut -d. -f 2 version)
-        PATCH=$(cut -d. -f 3 version)
-        new_version=$( printf "%d.%d.%d" $MAJOR $MINOR $(( $PATCH + 1 )))
-        echo new_version
-        mvn versions:set -DnewVersion=$(cat version) -DgenerateBackupPoms=false --batch-mode
+        new_version="$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)-${GITHUB_SHA}"
+        mvn versions:set -DnewVersion=$new_version -DgenerateBackupPoms=false --batch-mode
+        echo $new_version
         echo "docker-tag=$(echo $new_version)" >> $GITHUB_OUTPUT
 
     - name: Build with Maven
-      run: mvn -B package --file pom.xml
+      run: |
+        mvn help:evaluate -Dexpression=project.version -q -DforceStdout
+        mvn -B package --file pom.xml
 
     - name: Run tests with Maven
       run: mvn -B test --file pom.xml
@@ -72,9 +68,6 @@ jobs:
         push: true
         tags: jorikvl/cloud-devops-example:${{ steps.set-version.outputs.docker-tag }}
 
-    - name: commit and push changes
-      uses: stefanzweifel/git-auto-commit-action@v5
-
   deploy:
     needs: build
     runs-on: 
@@ -98,5 +91,6 @@ jobs:
             az extension add --name containerapp --upgrade
             echo "${docker_tag}"
             az containerapp update \
-              -n dev-app-uat -g rg-dev \
+              -n dev-app -g rg-dev \
             --image "docker.io/jorikvl/cloud-devops-example:${docker_tag}"
+

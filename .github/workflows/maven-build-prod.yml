@@ -6,19 +6,19 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Build and push dev
+name: Build and push prod
 
 on:
-  push:
-    branches:
-      - "main"
+  workflow_dispatch:
+    
 
 jobs:
   build:
-    environment:
-      "dev"
     permissions:
       contents: write
+    environment:
+      "production"
+
     runs-on: ubuntu-latest
     outputs:
       docker-tag: ${{ steps.set-version.outputs.docker-tag }}
@@ -36,18 +36,18 @@ jobs:
       id: set-version
       run : |
         echo $(mvn help:evaluate -Dexpression=project.version -q -DforceStdout) > version
-        cut -d- -f 1 version > version
-        cat version
-        MAJOR=$(cut -d. -f 1 version)
-        MINOR=$(cut -d. -f 2 version)
-        PATCH=$(cut -d. -f 3 version)
-        new_version=$( printf "%d.%d.%d" $MAJOR $MINOR $(( $PATCH + 1 )))
-        echo new_version
-        mvn versions:set -DnewVersion=$(cat version) -DgenerateBackupPoms=false --batch-mode
+        cut -d- -f 1 version > old_version
+        MAJOR=$(cut -d. -f 1 old_version)
+        MINOR=$(cut -d. -f 2 old_version)
+        PATCH=$(cut -d. -f 3 old_version)
+        new_version=$( printf "%d.%d.0" $MAJOR $(( $MINOR + 1 )))
+        mvn versions:set -DnewVersion=$new_version -DgenerateBackupPoms=false --batch-mode
         echo "docker-tag=$(echo $new_version)" >> $GITHUB_OUTPUT
 
     - name: Build with Maven
-      run: mvn -B package --file pom.xml
+      run: |
+        mvn help:evaluate -Dexpression=project.version -q -DforceStdout
+        mvn -B package --file pom.xml
 
     - name: Run tests with Maven
       run: mvn -B test --file pom.xml
@@ -79,7 +79,7 @@ jobs:
     needs: build
     runs-on: 
       ubuntu-latest
-    environment: "dev"
+    environment: "production"
     steps:
       - name: login to Azure
         uses: azure/login@v1
@@ -98,5 +98,5 @@ jobs:
             az extension add --name containerapp --upgrade
             echo "${docker_tag}"
             az containerapp update \
-              -n dev-app-uat -g rg-dev \
+              -n prod-app -g rg-prod \
             --image "docker.io/jorikvl/cloud-devops-example:${docker_tag}"
