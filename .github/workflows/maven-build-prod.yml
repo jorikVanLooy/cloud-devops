@@ -40,7 +40,7 @@ jobs:
         MINOR=$(cut -d. -f 2 version)
         PATCH=$(cut -d. -f 3 version)
         new_version=$( printf "%d.%d.%d" $MAJOR $MINOR $(( $PATCH + 1 )))
-        echo new_version
+        echo $new_version
         mvn versions:set -DnewVersion=$(cat version) -DgenerateBackupPoms=false --batch-mode
 
     - name: Build with Maven
