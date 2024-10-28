@@ -87,7 +87,7 @@ jobs:
         with:
           azcliversion: latest
           inlineScript: |
-            azc extension add --name conainerapp --upgrade
+            az extension add --name conainerapp --upgrade
             az containerapp update \
               -n dev-app -g rg-dev \
               --image docker.io/jorikvl/cloud-devops-example:${docker-tag}
