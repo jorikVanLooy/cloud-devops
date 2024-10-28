@@ -27,5 +27,12 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
+    - name: get mvn version
+      run: current_version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+
+    - name: echo version
+      run: echo $current_version
+
+
     - name: Run tests with Maven
       run: mvn -B test --file pom.xml
