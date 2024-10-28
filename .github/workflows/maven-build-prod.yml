@@ -39,7 +39,8 @@ jobs:
         MAJOR=$(cut -d. -f 1 version)
         MINOR=$(cut -d. -f 2 version)
         PATCH=$(cut -d. -f 3 version)
-        new_version=$( printf "%d.%d.%d" $MAJOR $MINOR $(( $PATCH + 1 )))
+        echo "${MAJOR}.${MINOR}.${PATCH}"
+        new_version=$( printf "%d.%d.0" $MAJOR $(( $MINOR + 1 )))
         echo $new_version
         mvn versions:set -DnewVersion=$(cat version) -DgenerateBackupPoms=false --batch-mode
 
