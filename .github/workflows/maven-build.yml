@@ -15,7 +15,8 @@ on:
 
 jobs:
   build:
-
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
 
     steps:
@@ -65,3 +66,6 @@ jobs:
         file: docker/Dockerfile
         push: true
         tags: jorikvl/cloud-devops-example:latest
+
+    - name: commit and push changes
+      uses: stefanzweifel/git-auto-commit-action@v5
