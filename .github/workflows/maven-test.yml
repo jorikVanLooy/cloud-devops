@@ -28,10 +28,11 @@ jobs:
         cache: maven
 
     - name: get mvn version
-      run: current_version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+      id: get-mvn-version
+      run: echo "current_version=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_OUTPUT
 
     - name: echo version
-      run: echo $current_version
+      run: echo "${{ steps.get-mvn-version.outputs.current_version }}"
 
 
     - name: Run tests with Maven
