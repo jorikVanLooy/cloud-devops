@@ -36,7 +36,6 @@ jobs:
         echo $(mvn help:evaluate -Dexpression=project.version -q -DforceStdout) > version
         cut -d- -f 1 version > old_version
         cat old_version
-        
         MAJOR=$(cut -d. -f 1 old_version)
         MINOR=$(cut -d. -f 2 old_version)
         PATCH=$(cut -d. -f 3 old_version)
@@ -44,6 +43,7 @@ jobs:
         new_version=$( printf "%d.%d.0" $MAJOR $(( $MINOR + 1 )))
         echo $new_version
         mvn versions:set -DnewVersion=$(cat version) -DgenerateBackupPoms=false --batch-mode
+        echo "docker-tag=$(echo $new_version)" >> $GITHUB_OUTPUT
 
     - name: Build with Maven
       run: mvn -B package --file pom.xml
@@ -69,4 +69,4 @@ jobs:
         context: .
         file: docker/Dockerfile
         push: true
-        tags: jorikvl/cloud-devops-example:latest
+        tags: jorikvl/cloud-devops-example:${{ step.set-version.outputs.docker-tag }}
