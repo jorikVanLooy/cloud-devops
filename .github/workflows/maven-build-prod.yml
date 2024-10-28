@@ -35,9 +35,12 @@ jobs:
       run : |
         echo $(mvn help:evaluate -Dexpression=project.version -q -DforceStdout) > version
         export version=$(cut -d- -f 1 version)
-        cat version
-        echo $version
-        mvn versions:set -DnewVersion=$current_version -DgenerateBackupPoms=false --batch-mode
+        MAJOR=$(cut -d. -f 1 version)
+        MINOR=$(cut -d. -f 2 version)
+        PATCH=$(cut-d. -f 3 version)
+        new_version=$( printf "%d.%d.%d" $MAJOR $(( $MINOR + 1 )) $PATCH)
+        echo new_version
+        mvn versions:set -DnewVersion=$version -DgenerateBackupPoms=false --batch-mode
 
     - name: Build with Maven
       run: mvn -B package --file pom.xml
