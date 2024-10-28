@@ -34,7 +34,7 @@ jobs:
       id: set-version
       run : |
         echo $(mvn help:evaluate -Dexpression=project.version -q -DforceStdout) > version
-        export version=$(sed 's/[-SNAPSHOT]//' version)
+        export version=$(cut -d- -f 1 version)
         cat version
         echo $version
         mvn versions:set -DnewVersion=$current_version -DgenerateBackupPoms=false --batch-mode
