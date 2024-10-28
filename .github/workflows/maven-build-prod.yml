@@ -33,9 +33,9 @@ jobs:
     - name: set maven version
       id: set-version
       run : |
-        export current_version="$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)"
-        export version=$(sed 's/[-SNAPSHOT]//' $currentversion)
-        echo $current_version
+        echo $(mvn help:evaluate -Dexpression=project.version -q -DforceStdout) > version
+        export version=$(sed 's/[-SNAPSHOT]//' version)
+        cat version
         echo $version
         mvn versions:set -DnewVersion=$current_version -DgenerateBackupPoms=false --batch-mode
 
