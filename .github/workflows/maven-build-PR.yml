@@ -81,10 +81,14 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Build and deploy Container App
+        uses: azure/cli@v2
         env:
           docker-tag: ${{ needs.build.outputs.docker-tag }}
-        uses: azure/container-apps-deploy-action@v1
         with:
-          imageToDeploy: "docker.io/jorikvl/cloud-devops-example:${docker-tag}"
-          containerAppName: dev-app
-          resourceGroup: rg-dev
+          azcliversion: latest
+          inlineScript: |
+            azc extension add --name conainerapp --upgrade
+            az containerapp update \
+              -n dev-app -g rg-dev \
+              --image docker.io/jorikvl/cloud-devops-example:${docker-tag}
+
