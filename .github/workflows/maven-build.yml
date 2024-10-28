@@ -15,6 +15,8 @@ on:
 
 jobs:
   build:
+    environment:
+      "dev"
     permissions:
       contents: write
     runs-on: ubuntu-latest
@@ -68,10 +70,33 @@ jobs:
         context: .
         file: docker/Dockerfile
         push: true
-        tags: jorikvl/cloud-devops-example:
+        tags: jorikvl/cloud-devops-example:${{ steps.set-version.outputs.docker-tag }}
 
     - name: commit and push changes
       uses: stefanzweifel/git-auto-commit-action@v5
 
   deploy:
-    - name: login to azure
+    needs: build
+    runs-on: 
+      ubuntu-latest
+    environment: "dev"
+    steps:
+      - name: login to Azure
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Build and deploy Container App
+        uses: azure/cli@v2
+        env:
+          docker_tag: ${{ needs.build.outputs.docker-tag }}
+        with:
+          azcliversion: latest
+          inlineScript: |
+            az extension add --name containerapp --upgrade
+            echo "${docker_tag}"
+            az containerapp update \
+              -n dev-app -g rg-dev \
+            --image "docker.io/jorikvl/cloud-devops-example:${docker_tag}"
