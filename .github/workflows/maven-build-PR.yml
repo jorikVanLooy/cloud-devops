@@ -37,7 +37,6 @@ jobs:
       run : |
         new_version="$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)-${GITHUB_SHA}"
         mvn versions:set -DnewVersion=$new_version -DgenerateBackupPoms=false --batch-mode
-        echo $new_version
         echo "docker-tag=$(echo $new_version)" >> $GITHUB_OUTPUT
 
     - name: Build with Maven
