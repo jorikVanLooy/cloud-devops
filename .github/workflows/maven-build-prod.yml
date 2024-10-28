@@ -18,6 +18,8 @@ jobs:
       contents: write
 
     runs-on: ubuntu-latest
+    outputs:
+      docker-tag: ${{ steps.set-version.outputs.docker-tag }}
 
     steps:
     - uses: actions/checkout@v4
@@ -67,5 +69,6 @@ jobs:
         file: docker/Dockerfile
         push: true
         tags: jorikvl/cloud-devops-example:${{ steps.set-version.outputs.docker-tag }}
+
     - name: commit and push changes
       uses: stefanzweifel/git-auto-commit-action@v5

@@ -18,6 +18,8 @@ jobs:
     permissions:
       contents: write
     runs-on: ubuntu-latest
+    outputs:
+      docker-tag: ${{ steps.set-version.outputs.docker-tag }}
 
     steps:
     - uses: actions/checkout@v4
@@ -40,6 +42,7 @@ jobs:
         new_version=$( printf "%d.%d.%d" $MAJOR $MINOR $(( $PATCH + 1 )))
         echo new_version
         mvn versions:set -DnewVersion=$(cat version) -DgenerateBackupPoms=false --batch-mode
+        echo "docker-tag=$(echo $new_version)" >> $GITHUB_OUTPUT
 
     - name: Build with Maven
       run: mvn -B package --file pom.xml
@@ -65,7 +68,10 @@ jobs:
         context: .
         file: docker/Dockerfile
         push: true
-        tags: jorikvl/cloud-devops-example:latest
+        tags: jorikvl/cloud-devops-example:
 
     - name: commit and push changes
       uses: stefanzweifel/git-auto-commit-action@v5
+
+  deploy:
+    - name: login to azure
