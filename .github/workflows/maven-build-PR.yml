@@ -68,6 +68,7 @@ jobs:
         tags: jorikvl/cloud-devops-example:${{ steps.set-version.outputs.docker-tag }}
 
   deploy:
+    needs: build
     runs-on: 
       ubuntu-latest
     environment: "dev"
