@@ -35,7 +35,10 @@ jobs:
     - name: set maven version
       id: set-version
       run : |
-        echo "docker-tag=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_OUTPUT
+        echo $(mvn help:evaluate -Dexpression=project.version -q -DforceStdout) > version
+        new_version=$(cut -d- -f 1 version)
+        mvn versions:set -DnewVersion=$new_version -DgenerateBackupPoms=false --batch-mode
+        echo "docker-tag=$(echo $new_version)" >> $GITHUB_OUTPUT
 
     - name: Build with Maven
       run: mvn -B package --file pom.xml
