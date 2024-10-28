@@ -37,6 +37,7 @@ jobs:
       run : |
         new_version="$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)-${GITHUB_SHA}"
         mvn versions:set -DnewVersion=$new_version -DgenerateBackupPoms=false --batch-mode
+        echo $new_version
         echo "docker-tag=$(echo $new_version)" >> $GITHUB_OUTPUT
 
     - name: Build with Maven
@@ -88,7 +89,8 @@ jobs:
           azcliversion: latest
           inlineScript: |
             az extension add --name containerapp --upgrade
+            echo $docker-tag
             az containerapp update \
               -n dev-app -g rg-dev \
-              --image docker.io/jorikvl/cloud-devops-example:${docker-tag}
+              --image docker.io/jorikvl/cloud-devops-example:$docker-tag
 
