@@ -48,7 +48,7 @@ jobs:
       run: ls -la target/node
 
     - name: ls
-      run: ls -la target/classes
+      run: ls -la target/node/node
 
     - name: Run tests with Maven
       run: mvn -B test --file pom.xml
