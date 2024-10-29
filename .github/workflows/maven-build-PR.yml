@@ -45,7 +45,7 @@ jobs:
         mvn -B package --file pom.xml
 
     - name: ls
-      run: ls -la 
+      run: ls -la target 
 
     - name: Run tests with Maven
       run: mvn -B test --file pom.xml
