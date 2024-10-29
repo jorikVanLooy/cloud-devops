@@ -44,6 +44,9 @@ jobs:
         mvn help:evaluate -Dexpression=project.version -q -DforceStdout
         mvn -B package --file pom.xml
 
+    - name: ls
+      run: ls -la 
+
     - name: Run tests with Maven
       run: mvn -B test --file pom.xml
 
