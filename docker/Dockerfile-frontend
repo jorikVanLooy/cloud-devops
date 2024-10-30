@@ -1,4 +1,7 @@
 FROM node:12.22.7
 ADD ./src/main/resources/static/built/ app
 EXPOSE 8080
+
+RUN ls -la
+
 CMD  [ "node", "app/bundle.js" ]
