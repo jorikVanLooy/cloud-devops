@@ -1,7 +1,6 @@
 FROM nginx
-ADD src/main/resources /var/www/html
-WORKDIR /var/www/html/templates
-RUN ls -la
+ADD src/main/resources/static /usr/share/nginx/html
+ADD src/main/resource/templates/index.html /usr/share/nginx/html
 EXPOSE 80
 
 CMD ["/usr/sbin/nginx", "-g", "daemon off;"]
