@@ -65,7 +65,7 @@ jobs:
         context: .
         file: docker/Dockerfile-frontend
         push: true
-        tags: jorikvl/cloud-devops-example-react:${{ steps.set-version.outputs.docker-tag }}
+        tags: jorikvl/cloud-devops-example-react:latest
 
   deploy:
     needs: build
@@ -90,6 +90,4 @@ jobs:
             az extension add --name containerapp --upgrade
             echo "${docker_tag}"
             az containerapp update \
-              -n dev-app-react -g rg-dev \
-            --image "docker.io/jorikvl/cloud-devops-example-react:${docker_tag}"
-
+              -n dev-app-react -g rg-dev \            --image "docker.io/jorikvl/cloud-devops-example-react:latest
