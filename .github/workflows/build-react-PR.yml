@@ -35,7 +35,7 @@ jobs:
     - name: set maven version
       id: set-version
       run : |
-        new_version=$(echo "$(cat package.json | jq ".version")-${GITHUB_SHA}")
+        new_version=$(echo "$(cat package.json | jq -r ".version")-${GITHUB_SHA}")
         echo "docker-tag=${new_version}" >> $GITHUB_OUTPUT
 
     - name: install dependencies
