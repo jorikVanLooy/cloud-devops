@@ -39,7 +39,7 @@ jobs:
       run: webpack
 
     - name: ls
-      run: ls -la /src/main/resources/static/templates/
+      run: ls -la ./src/main/resources/static/templates/
 
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
