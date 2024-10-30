@@ -6,48 +6,43 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Build and push prod
+name: Build frontend
 
 on:
-  workflow_dispatch:
-    
+  pull_request:
+    branches:
+      - "main"
 permissions:
   id-token: write
 
 jobs:
   build:
-    permissions:
-      contents: write
-    environment:
-      "prod"
-
-    runs-on: ubuntu-latest
+    environment: "dev"
     outputs:
       docker-tag: ${{ steps.set-version.outputs.docker-tag }}
 
+    runs-on: ubuntu-latest
+
     steps:
     - uses: actions/checkout@v4
-    - name: Set up JDK 8
-      uses: actions/setup-java@v4
+    - uses: actions/setup-node@v4
       with:
-        java-version: '8'
-        distribution: 'temurin'
-        cache: maven
+        node-version: "12.14.0"
 
     - name: set maven version
       id: set-version
       run : |
-        echo $(mvn help:evaluate -Dexpression=project.version -q -DforceStdout) > version
-        new_version=$(cut -d- -f 1 version)
-        mvn versions:set -DnewVersion=$new_version -DgenerateBackupPoms=false --batch-mode
-        echo "docker-tag=$(echo $new_version)" >> $GITHUB_OUTPUT
+        new_version=echo "$(cat package.json | jq -r '.version')-${GITHUB_SHA}"
+        echo "docker-tag=${new_version}" >> $GITHUB_OUTPUT
 
-    - name: Build with Maven
-      run: |
-        mvn -B package --file pom.xml
+    - name: install dependencies
+      run: npm install
 
-    - name: Run tests with Maven
-      run: mvn -B test --file pom.xml
+    - name: install webpack
+      run: npm install webpack
+
+    - name: run webpack
+      run: webpack
 
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
@@ -65,15 +60,15 @@ jobs:
       uses: docker/build-push-action@v6
       with:
         context: .
-        file: docker/Dockerfile
+        file: docker/Dockerfile-frontend
         push: true
-        tags: jorikvl/cloud-devops-example-java:${{ steps.set-version.outputs.docker-tag }}
+        tags: jorikvl/cloud-devops-example-react:${{ steps.set-version.outputs.docker-tag }}
 
   deploy:
     needs: build
     runs-on: 
       ubuntu-latest
-    environment: "prod"
+    environment: "dev"
     steps:
       - name: login to Azure
         uses: azure/login@v1
@@ -92,5 +87,6 @@ jobs:
             az extension add --name containerapp --upgrade
             echo "${docker_tag}"
             az containerapp update \
-              -n prod-app-java -g rg-prod \
-            --image "docker.io/jorikvl/cloud-devops-example-java:${docker_tag}"
+              -n dev-app-react -g rg-dev \
+            --image "docker.io/jorikvl/cloud-devops-example-react:${docker_tag}"
+
