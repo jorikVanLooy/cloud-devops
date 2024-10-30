@@ -1,8 +1,6 @@
-FROM node:12.22.7
-ADD ./src/main/resources/static/built/ app
-ADD ./src src
-EXPOSE 8080
+FROM nginx
+ADD src/main/resources/static /var/www/html
+EXPOSE 80
 
-RUN ls -la app
+CMD ["/usr/sbin/nginx", "-g", "daemon off;"]
 
-CMD  [ "node", "app/bundle.js" ]
