@@ -35,5 +35,8 @@ jobs:
     - name: install webpack
       run: npm install webpack
 
+    - name: run webpack
+      run: webpack
+
     - name: ls
       run: ls -la
