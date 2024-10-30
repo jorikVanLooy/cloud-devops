@@ -64,7 +64,7 @@ jobs:
       uses: docker/build-push-action@v6
       with:
         context: .
-        file: docker/Dockerfile
+        file: docker/Dockerfile-backend
         push: true
         tags: jorikvl/cloud-devops-example:${{ steps.set-version.outputs.docker-tag }}
 
