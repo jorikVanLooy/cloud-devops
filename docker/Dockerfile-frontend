@@ -1,4 +1,4 @@
 FROM node:12.22.7
 ADD ./src/main/resources/static/built/ app
 EXPOSE 8080
-CMD  [ "/bin/bash", "node", "app/bundle.js" ]
+CMD  [ "node", "app/bundle.js" ]
