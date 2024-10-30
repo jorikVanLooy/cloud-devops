@@ -1,5 +1,6 @@
 FROM node:12.22.7
 ADD ./src/main/resources/static/built/ app
+ADD ./src/main/js app
 EXPOSE 8080
 
 RUN ls -la app
