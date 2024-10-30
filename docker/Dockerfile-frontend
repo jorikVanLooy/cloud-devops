@@ -1,5 +1,5 @@
 FROM nginx
-ADD src/main/resources/static /var/www/html
+ADD src/main/resources/static/** /var/www/html
 WORKDIR /var/www/html/templates
 RUN ls -la
 EXPOSE 80
