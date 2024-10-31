@@ -4,7 +4,7 @@ const SockJS = require('sockjs-client');
 require('stompjs');
 
 function register(registrations) {
-	const socket = SockJS('/payroll');
+	const socket = SockJS('dev-app-react.greenbush-41edd243.westeurope.azurecontainerapps.io/payroll');
 	const stompClient = Stomp.over(socket);
 	stompClient.connect({}, function(frame) {
 		registrations.forEach(function (registration) {
