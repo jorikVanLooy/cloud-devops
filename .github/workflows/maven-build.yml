@@ -6,9 +6,10 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Build and push dev
+name: Build and push uat
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - "main"
@@ -91,5 +92,5 @@ jobs:
             az extension add --name containerapp --upgrade
             echo "${docker_tag}"
             az containerapp update \
-              -n dev-app-uat -g rg-dev \
+              -n uat-app-java -g rg-uat \
             --image "docker.io/jorikvl/cloud-devops-example:${docker_tag}"

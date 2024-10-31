@@ -92,5 +92,5 @@ jobs:
             az extension add --name containerapp --upgrade
             echo "${docker_tag}"
             az containerapp update \
-              -n prod-app -g rg-prod \
+              -n prod-app-java -g rg-prod \
             --image "docker.io/jorikvl/cloud-devops-example:${docker_tag}"
