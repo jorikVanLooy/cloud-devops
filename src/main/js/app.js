@@ -9,7 +9,7 @@ const follow = require('./follow');
 
 const stompClient = require('./websocket-listener');
 
-const root = '/api';
+const root = 'https://dev-app-java.greenbush-41edd243.westeurope.azurecontainerapps.io/api';
 
 class App extends React.Component {
 

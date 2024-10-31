@@ -66,7 +66,7 @@ jobs:
         context: .
         file: docker/Dockerfile
         push: true
-        tags: jorikvl/cloud-devops-example:${{ steps.set-version.outputs.docker-tag }}
+        tags: jorikvl/cloud-devops-example-java:${{ steps.set-version.outputs.docker-tag }}
 
   deploy:
     needs: build
@@ -91,5 +91,5 @@ jobs:
             az extension add --name containerapp --upgrade
             echo "${docker_tag}"
             az containerapp update \
-              -n dev-app-uat -g rg-dev \
-            --image "docker.io/jorikvl/cloud-devops-example:${docker_tag}"
+              -n uat-app-java -g rg-dev \
+            --image "docker.io/jorikvl/cloud-devops-example-java:${docker_tag}"
