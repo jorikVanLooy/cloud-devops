@@ -9,6 +9,8 @@
 name: Build and push dev
 
 on:
+  workflow_dispatch:
+    
   push:
     branches:
       - "main"
