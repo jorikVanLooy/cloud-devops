@@ -19,7 +19,7 @@ permissions:
 jobs:
   build:
     environment:
-      "dev"
+      "uat"
     permissions:
       contents: write
     runs-on: ubuntu-latest
@@ -73,7 +73,7 @@ jobs:
     needs: build
     runs-on: 
       ubuntu-latest
-    environment: "dev"
+    environment: "uat"
     steps:
       - name: login to Azure
         uses: azure/login@v1
